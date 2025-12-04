@@ -1,105 +1,47 @@
-<!-- PROGRAM-2 : AJAX Example (Explained for quick memory) -->
 <!DOCTYPE html>
 <html>
 <head>
-<title>AJAX PROGRAM</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-<style>
-
-/* Apply SAME margin and padding to everything */
-* {
-    margin: 10px;
-    padding: 10px;
-    box-sizing: border-box;
-}
-
-/* Basic styles */
-body {
-    font-family: Arial, sans-serif;
-    background: #f3f4ff;
-    text-align: center;
-}
-
-button {
-    width: 100%;
-    background: #007bff;
-    border: none;
-    color: white;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-button:hover {
-    opacity: 0.9;
-}
-
-#output {
-    background: #eef6ff;
-    border: 1px solid #cfe2ff;
-    border-radius: 6px;
-    display: none;
-    text-align: left;
-}
-
-</style>
-
+    <title>JSON Tools</title>
+    <style>
+        body{font-family:Arial;padding:20px}
+        textarea{width:200px;height:50px;margin:5px}
+        button{padding:8px;background:#007bff;color:#fff;border:none;margin:5px}
+        pre{background:#f0f0f0;padding:10px}
+    </style>
 </head>
 <body>
+    <h2>JSON Tools</h2>
 
-<h2>AJAX Operations</h2>
+    <h4>a) JSON to Object</h4>
+    <textarea id="a">{"name":"John","age":25}</textarea>
+    <button onclick="document.getElementById('out').textContent=
+    JSON.stringify(JSON.parse(document.getElementById('a').value),null,2)">Convert</button>
 
-<!-- 4 buttons for 4 features -->
-<button id="plain">Plain AJAX</button>
-<button id="jquery">jQuery AJAX</button>
-<button id="json">getJSON()</button>
-<button id="parse">parseJSON()</button>
+    <h4>b) JSON to Date</h4>
+    <textarea id="b">{"date":"2024-01-01"}</textarea>
+    <button onclick="document.getElementById('out').textContent=
+    new Date(JSON.parse(document.getElementById('b').value).date)">Convert</button>
 
-<div id="output"></div>
+    <h4>c) JSON to CSV</h4>
+    <textarea id="c">[{"name":"John","age":30},{"name":"Jane","age":25}]</textarea>
+    <button onclick="
+    var a=JSON.parse(document.getElementById('c').value);
+    document.getElementById('out').textContent=Object.keys(a[0])+'\n'+a.map(o=>Object.values(o)).join('\n')
+    ">Convert</button>
 
-<script>
+    <h4>c) CSV to JSON</h4>
+    <textarea id="d">name,age
+                      John,30
+                      Jane,25</textarea>
+    <button onclick="
+    var l=document.getElementById('d').value.split('\n'),k=l[0].split(','),
+    r=[];for(var i=1;i<l.length;i++){var o={},v=l[i].split(',');for(var j=0;j<k.length;j++)o[k[j]]=v[j];r.push(o)}document.getElementById('out').textContent=JSON.stringify(r,null,2)">Convert</button>
 
-/* Common function to display */
-function show(){output.style.display="block"}
+    <h4>d) Create Hash</h4>
+    <textarea id="e">hello</textarea>
+    <button onclick="(async()=>{var h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(document.getElementById('e').value));document.getElementById('out').textContent=[...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join('')})()">Hash</button>
 
-/* a) Without jQuery – XMLHttpRequest */
-plain.onclick=function(){
- let x=new XMLHttpRequest();               // create request
- x.open("GET","textfile.txt",true);        // file call
- x.onload=function(){
-   output.innerText = x.status==200?x.responseText:"Error";
-   show();
- }
- x.send();                                 // send request
-}
-
-/* b) With jQuery AJAX */
-$("#jquery").click(function(){
- $.ajax({
-   url:"textfile.txt",
-   success:(d)=>output.innerText=d,        // show response
-   error:()=>output.innerText="Error"
- }).always(show)
-})
-
-/* c) getJSON method */
-$("#json").click(function(){
- $.getJSON("data.json",function(d){
-   output.innerText=JSON.stringify(d,null,2); // pretty JSON
- }).fail(()=>output.innerText="Error").always(show)
-})
-
-/* d) parseJSON */
-$("#parse").click(function(){
- $.get("data.json",function(data){
-  try{
-   let j = typeof data=="string"?$.parseJSON(data):data;
-   output.innerText=JSON.stringify(j,null,2);
-  }catch(e){output.innerText="Parse Error";}
- }).fail(()=>output.innerText="Error").always(show)
-})
-
-</script>
+    <h4>Output:</h4>
+    <pre id="out">Output appears here...</pre>
 </body>
 </html>
