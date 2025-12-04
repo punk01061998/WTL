@@ -1,0 +1,58 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<title>JQueries</title> 
+
+<!-- Load jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+</head> 
+
+<body style="font-size:x-large;"> 
+
+<!-- 4 paragraphs with different IDs -->
+<p id="append">Click on me to find What do you call a polite ghost's first words?</p><br> 
+<p id="remove">I'm a temporary thought... click me, and POOF, I'm gone!</p><br> 
+<p id="styling">Click me for a makeover... I'm going from plain to FABULOUS!</p><br> 
+<p id="animation">Click me, and watch me dance like I just got promoted!</p> 
+
+<script>
+// Run this code only after the webpage is fully loaded
+$(document).ready(function (){ 
+
+    // 1️⃣ When you click #append → add "Hello!!" at the end of the text
+    $("#append").click(function(){ 
+        $(this).append(" Hello!!");  
+        // $(this) means "the element that was clicked"
+        // append() means "add text at the end"
+    }); 
+
+    // 2️⃣ When you click #remove → remove (delete) the entire paragraph
+    $('#remove').click(function(){ 
+        $(this).remove();  
+        // remove() deletes the element from the page
+    }); 
+
+    // 3️⃣ When you click #styling → apply CSS changes to give a stylish look
+    $("#styling").click(function(){ 
+        $(this).css({  
+            "color": "#2C3E50",              // text color
+            "background-color": "#ECF0F1",   // background color
+            "padding": "5px",                // space inside the box
+            "border-radius": "8px"           // rounded corners
+        }); 
+    });
+
+    // 4️⃣ When you click #animation → animate the size & spacing + change color
+    $("#animation").click(function() { 
+        $(this).animate({  
+            fontSize: "1.5em",      // make text bigger smoothly
+            letterSpacing: "2px"    // increase space between letters
+        }, 500)                     // animation speed = 500ms (0.5 sec)
+        .css("color", "#4B88A2");   // change the text color after animation
+    }); 
+
+}); 
+</script> 
+
+</body> 
+</html>
