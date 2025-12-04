@@ -1,170 +1,113 @@
+<!-- PROGRAM-2 : AJAX Example (Explained for quick memory) -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JSON/CSV Tools</title>
+<title>AJAX PROGRAM</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-<!-- All CSS inside HTML -->
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-    }
-    .container {
-        border: 1px solid #ccc;
-        padding: 10px;
-        margin-bottom: 15px;
-        border-radius: 5px;
-    }
-    .flex {
-        display: flex;
-        gap: 20px;
-        align-items: flex-start;
-    }
-    textarea {
-        width: 30%;
-        height: 80px;
-        padding: 5px;
-        border-radius: 5px;
-    }
-    button {
-        padding: 8px 15px;
-        background: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-    .output {
-        background: #f1f1f1;
-        padding: 8px;
-        min-width: 200px;
-        min-height: 60px;
-        white-space: pre-wrap;
-    }
-</style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f4ff;
+    text-align: center;
+    padding: 20px;
+}
 
+h2 {
+    margin-bottom: 20px;
+}
+
+.container {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    background: #007bff;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+#output {
+    margin-top: 15px;
+    padding: 10px;
+    background: #eef6ff;
+    border: 1px solid #cfe2ff;
+    border-radius: 6px;
+    display: none;
+    text-align: left;
+}
+
+</style>
 </head>
 <body>
 
-<h2>JSON / CSV Tools</h2>
+<h2>AJAX Operations</h2>
 
-<!-- a) JSON text to JavaScript Object -->
-<div class="container">
-    <h3>Convert JSON Text to JavaScript Object</h3>
-    <div class="flex">
-        <textarea id="jsonInput" placeholder='{"name": "John", "age": 30}'></textarea>
-        <button onclick="convertJSONToObject()">Convert</button>
-        <pre id="objectOutput" class="output"></pre>
-    </div>
-</div>
+<!-- 4 buttons for 4 features -->
+<button id="plain">Plain AJAX</button>
+<button id="jquery">jQuery AJAX</button>
+<button id="json">getJSON()</button>
+<button id="parse">parseJSON()</button>
 
-<!-- Convert JSON date to JS Date -->
-<div class="container">
-    <h3>Convert JSON Date Field to JavaScript Date</h3>
-    <div class="flex">
-        <textarea id="jsonDateInput" placeholder='{"date": "2024-11-01T00:00:00Z"}'></textarea>
-        <button onclick="convertJSONToDate()">Convert</button>
-        <pre id="dateOutput" class="output"></pre>
-    </div>
-</div>
-
-<!-- b) JSON to CSV -->
-<div class="container">
-    <h3>Convert JSON to CSV</h3>
-    <div class="flex">
-        <textarea id="jsonToCSVInput" placeholder='[{"name":"John","age":30},{"name":"Jane","age":25}]'></textarea>
-        <button onclick="convertJSONToCSV()">Convert</button>
-        <pre id="csvOutput" class="output"></pre>
-    </div>
-</div>
-
-<!-- c) CSV to JSON -->
-<div class="container">
-    <h3>Convert CSV to JSON</h3>
-    <div class="flex">
-        <textarea id="csvToJSONInput" placeholder="name,age&#10;John,30&#10;Jane,25"></textarea>
-        <button onclick="convertCSVToJSON()">Convert</button>
-        <pre id="jsonOutput" class="output"></pre>
-    </div>
-</div>
-
-<!-- d) Create Hash -->
-<div class="container">
-    <h3>Create Hash from String (SHA-256)</h3>
-    <div class="flex">
-        <textarea id="hashInput" placeholder="Enter text to hash..."></textarea>
-        <button onclick="createHash()">Create</button>
-        <pre id="hashOutput" class="output"></pre>
-    </div>
-</div>
+<div id="output"></div>
 
 <script>
-    function convertJSONToObject() {
-        try {
-            const obj = JSON.parse(document.getElementById("jsonInput").value);
-            document.getElementById("objectOutput").textContent =
-                JSON.stringify(obj, null, 2);
-        } catch {
-            document.getElementById("objectOutput").textContent = "Invalid JSON";
-        }
-    }
 
-    function convertJSONToDate() {
-        try {
-            const obj = JSON.parse(document.getElementById("jsonDateInput").value);
-            const date = new Date(obj.date);
-            document.getElementById("dateOutput").textContent =
-                isNaN(date) ? "Invalid Date" : date.toString();
-        } catch {
-            document.getElementById("dateOutput").textContent = "Invalid JSON";
-        }
-    }
+/* Common function to display */
+function show(){output.style.display="block"}
 
-    function convertJSONToCSV() {
-        try {
-            const arr = JSON.parse(document.getElementById("jsonToCSVInput").value);
-            const headers = Object.keys(arr[0]);
-            const rows = arr.map(obj => headers.map(h => obj[h]).join(","));
-            const csv = [headers.join(","), ...rows].join("\n");
-            document.getElementById("csvOutput").textContent = csv;
-        } catch {
-            document.getElementById("csvOutput").textContent = "Invalid JSON";
-        }
-    }
+/* a) Without jQuery – XMLHttpRequest */
+plain.onclick=function(){
+ let x=new XMLHttpRequest();               // create request
+ x.open("GET","textfile.txt",true);        // file call
+ x.onload=function(){
+   output.innerText = x.status==200?x.responseText:"Error";
+   show();
+ }
+ x.send();                                 // send request
+}
 
-    function convertCSVToJSON() {
-        try {
-            const lines = document.getElementById("csvToJSONInput").value.trim().split("\n");
-            const headers = lines[0].split(",");
-            const rows = lines.slice(1);
+/* b) With jQuery AJAX */
+$("#jquery").click(function(){
+ $.ajax({
+   url:"textfile.txt",
+   success:(d)=>output.innerText=d,        // show response
+   error:()=>output.innerText="Error"
+ }).always(show)
+})
 
-            const json = rows.map(row => {
-                const values = row.split(",");
-                return Object.fromEntries(headers.map((h, i) => [h, values[i]]));
-            });
+/* c) getJSON method */
+$("#json").click(function(){
+ $.getJSON("data.json",function(d){
+   output.innerText=JSON.stringify(d,null,2); // pretty JSON
+ }).fail(()=>output.innerText="Error").always(show)
+})
 
-            document.getElementById("jsonOutput").textContent =
-                JSON.stringify(json, null, 2);
-        } catch {
-            document.getElementById("jsonOutput").textContent = "Invalid CSV";
-        }
-    }
+/* d) parseJSON */
+$("#parse").click(function(){
+ $.get("data.json",function(data){
+  try{
+   let j = typeof data=="string"?$.parseJSON(data):data;
+   output.innerText=JSON.stringify(j,null,2);
+  }catch(e){output.innerText="Parse Error";}
+ }).fail(()=>output.innerText="Error").always(show)
+})
 
-    async function createHash() {
-        const input = document.getElementById("hashInput").value;
-        const encoder = new TextEncoder();
-        const data = encoder.encode(input);
-
-        const buffer = await crypto.subtle.digest("SHA-256", data);
-        const hex = Array.from(new Uint8Array(buffer))
-            .map(b => b.toString(16).padStart(2, "0"))
-            .join("");
-
-        document.getElementById("hashOutput").textContent = hex;
-    }
 </script>
-
 </body>
 </html>
